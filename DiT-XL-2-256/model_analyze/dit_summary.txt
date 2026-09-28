@@ -1,0 +1,792 @@
+DiT transformer | device=cuda | dtype=torch.float16 | batch_size=1
+Blocks: 28; heads: 16; hidden size: 1152; tokens: 256
+Scope: one transformer forward pass; excludes VAE, scheduler and CFG batch duplication.
+Note: torchinfo Mult-Adds and memory estimates are not complete FLOPs or measured peak VRAM.
+
+============================================================================================================================================
+Layer (type (var_name))                                           Input Shape               Output Shape              Param #
+============================================================================================================================================
+DiTTransformer2DModel (DiTTransformer2DModel)                     --                        [1, 8, 32, 32]            --
+├─PatchEmbed (pos_embed)                                          [1, 4, 32, 32]            [1, 256, 1152]            --
+│    └─Conv2d (proj)                                              [1, 4, 32, 32]            [1, 1152, 16, 16]         19,584
+├─ModuleList (transformer_blocks)                                 --                        --                        --
+│    └─BasicTransformerBlock (0)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (1)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (2)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (3)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (4)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (5)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (6)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (7)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (8)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (9)                                  [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (10)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (11)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (12)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (13)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (14)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (15)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (16)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (17)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (18)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (19)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (20)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (21)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (22)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (23)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (24)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (25)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (26)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (27)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─AdaLayerNormZero (norm1)                              [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 --
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 296,064
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 1,328,256
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 --
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 1,153,152
+│    │    │    └─SiLU (silu)                                      [1, 1152]                 [1, 1152]                 --
+│    │    │    └─Linear (linear)                                  [1, 1152]                 [1, 6912]                 7,969,536
+│    │    │    └─LayerNorm (norm)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─Attention (attn1)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─Linear (to_q)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_k)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─Linear (to_v)                                    [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    └─ModuleList (to_out)                              --                        --                        --
+│    │    │    │    └─Linear (0)                                  [1, 256, 1152]            [1, 256, 1152]            1,328,256
+│    │    │    │    └─Dropout (1)                                 [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─LayerNorm (norm3)                                     [1, 256, 1152]            [1, 256, 1152]            --
+│    │    └─FeedForward (ff)                                      [1, 256, 1152]            [1, 256, 1152]            --
+│    │    │    └─ModuleList (net)                                 --                        --                        --
+│    │    │    │    └─GELU (0)                                    [1, 256, 1152]            [1, 256, 4608]            --
+│    │    │    │    │    └─Linear (proj)                          [1, 256, 1152]            [1, 256, 4608]            5,313,024
+│    │    │    │    └─Dropout (1)                                 [1, 256, 4608]            [1, 256, 4608]            --
+│    │    │    │    └─Linear (2)                                  [1, 256, 4608]            [1, 256, 1152]            5,309,568
+│    └─BasicTransformerBlock (0)                                  --                        --                        (recursive)
+│    │    └─AdaLayerNormZero (norm1)                              --                        --                        (recursive)
+│    │    │    └─CombinedTimestepLabelEmbeddings (emb)            [1]                       [1, 1152]                 (recursive)
+│    │    │    │    └─Timesteps (time_proj)                       [1]                       [1, 256]                  --
+│    │    │    │    └─TimestepEmbedding (timestep_embedder)       [1, 256]                  [1, 1152]                 (recursive)
+│    │    │    │    │    └─Linear (linear_1)                      [1, 256]                  [1, 1152]                 (recursive)
+│    │    │    │    │    └─SiLU (act)                             [1, 1152]                 [1, 1152]                 --
+│    │    │    │    │    └─Linear (linear_2)                      [1, 1152]                 [1, 1152]                 (recursive)
+│    │    │    │    └─LabelEmbedding (class_embedder)             [1]                       [1, 1152]                 (recursive)
+│    │    │    │    │    └─Embedding (embedding_table)            [1]                       [1, 1152]                 (recursive)
+├─Linear (proj_out_1)                                             [1, 1152]                 [1, 2304]                 2,656,512
+├─LayerNorm (norm_out)                                            [1, 256, 1152]            [1, 256, 1152]            --
+├─Linear (proj_out_2)                                             [1, 256, 1152]            [1, 256, 32]              36,896
+============================================================================================================================================
+Total params: 749,826,464
+Trainable params: 749,826,464
+Non-trainable params: 0
+Total mult-adds (Units.MEGABYTES): 757.60
+============================================================================================================================================
+Input size (MB): 0.01
+Forward/backward pass size (MB): 299.67
+Params size (MB): 1499.65
+Estimated Total Size (MB): 1799.33
+============================================================================================================================================
