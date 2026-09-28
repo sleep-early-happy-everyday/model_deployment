@@ -1,0 +1,19 @@
+[project]
+name = "dit-xl-2-256"
+version = "0.1.0"
+requires-python = "==3.12.3"
+dependencies = [
+    "accelerate==1.15.0",
+    "diffusers==0.35.2",
+    "huggingface-hub==2.0.0",
+    "socksio==1.0.0",
+    "torch==2.14.0",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
