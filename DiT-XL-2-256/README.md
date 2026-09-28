@@ -1,5 +1,10 @@
 # DiT-XL-2-256 本地推理
 
+## 0 实验环境
+
+- NVIDIA RTX 2080Ti
+- Intel CPU
+
 使用 uv 来管理依赖库。
 
 ```bash
@@ -18,7 +23,9 @@ source .venv/bin/activate
 hf download facebook/DiT-XL-2-256 --revision main --local-dir ./weights
 ```
 
-参考：[facebook/DiT-XL-2-256](https://huggingface.co/facebook/DiT-XL-2-256)
+* 参考
+    * [facebook/DiT-XL-2-256](https://huggingface.co/facebook/DiT-XL-2-256)
+    * [论文：Scalable Diffusion Models with Transformers](https://arxiv.org/pdf/2212.09748)
 
 ## 1 生成图片
 
@@ -48,23 +55,4 @@ python generate.py --class-id 1 --steps 50 --seed 123 --output outputs/goldfish.
 同一输出路径再次运行会覆盖已有图片。
 
 参考：[Diffusers DiT 文档](https://huggingface.co/docs/diffusers/api/pipelines/dit)。
-
-
-## 分析模型结构
-
-使用 torchinfo 分析本地 DiT Transformer，显示各模块的输入输出形状和参数量：
-
-```bash
-uv run python model_analyze/analyze_dit.py
-```
-
-报告同时保存到 `model_analyze/dit_summary.txt`，再次运行会覆盖该文件。
-默认展示 3 层模块；使用 `--depth 5` 查看 Attention、MLP 等模块的更深层结构。
-有 CUDA 时使用 GPU/FP16，否则使用 CPU/FP32。
-
-分析执行 batch size 为 1 的单次 Transformer 前向计算，输入为 `[1, 4, 32, 32]`
-的潜变量、时间步和类别 ID；不包含 VAE、采样循环或 CFG 的批次翻倍。
-torchinfo 显示的 Mult-Adds 和内存估算不代表完整 FLOPs 或实测峰值显存。
-
-
 
